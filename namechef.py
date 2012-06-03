@@ -12,6 +12,22 @@
 from time import *
 from random import *
 
+import Ice, sys
+import Murmur
+
+##################################################
+# Init
+
+Ice.loadSlice("-I/usr/share/Ice/slice/ /usr/share/Ice/slice/Murmur.ice")
+prop = Ice.createProperties(sys.argv)
+prop.setProperty("Ice.ImplicitContext", "Shared")
+idd = Ice.InitializationData()
+idd.properties = prop
+ice = Ice.initialize(idd)
+ice.getImplicitContext().put("secret", "secureme")
+meta = Murmur.MetaPrx.checkedCast(ice.stringToProxy("Meta:tcp -h 127.0.0.1 -p 6502"))
+server=meta.getServer(1)
+
 ##################################################
 # Funs
 
